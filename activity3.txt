@@ -1,0 +1,203 @@
+SQL> spool
+currently spooling to C:\Users\nisar\Desktop\activity3.txt
+SQL> create table emp(
+  2      empno number(8) primary key,
+  3      emp_last_name varchar2(12) not null,
+  4      emp_first_name varchar2(12) not null,
+  5      emp_dept_code number(8)not null,
+  6      emp_dept_name varchar2(12) not null,
+  7      emp_dept_location varchar2(12)not null,
+  8      emp_gender varchar2(12)not null,
+  9      emp_supervisor varchar2(12) null,
+ 10      emp_dept_head varchar2(12)not null,
+ 11      emp_next_of_kin varchar2(12)not null,
+ 12      emp_salary number(12)not null,
+ 13      hire_date varchar2(12)not null,
+ 14      relationship varchar2(12)not null
+ 15  );
+create table emp(
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object 
+
+
+SQL> drop table emp
+  2  /
+
+Table dropped.
+
+SQL> create table emp(
+  2      empno number(8) primary key,
+  3      emp_last_name varchar2(12) not null,
+  4      emp_first_name varchar2(12) not null,
+  5      emp_dept_code number(8)not null,
+  6      emp_dept_name varchar2(12) not null,
+  7      emp_dept_location varchar2(12)not null,
+  8      emp_gender varchar2(12)not null,
+  9      emp_supervisor varchar2(12) null,
+ 10      emp_dept_head varchar2(12)not null,
+ 11      emp_next_of_kin varchar2(12)not null,
+ 12      emp_salary number(12)not null,
+ 13      hire_date varchar2(12)not null,
+ 14      relationship varchar2(12)not null
+ 15  );
+
+Table created.
+
+SQL> create table hobby(
+  2      hobby_code number(8) primary key unique,
+  3      emp_no number(8) references emp ,
+  4      hobby_title varchar2(12) not null,
+  5      bobby_class varchar2(12) not null
+  6  );
+    hobby_code number(8) primary key unique,
+                                     *
+ERROR at line 2:
+ORA-02259: duplicate UNIQUE/PRIMARY KEY specifications 
+
+
+SQL> create table hobby(
+  2      hobby_code number(8) primary key unique,
+  3      emp_no number(8) references emp ,
+  4      hobby_title varchar2(12) not null,
+  5      bobby_class varchar2(12) not null);
+    hobby_code number(8) primary key unique,
+                                     *
+ERROR at line 2:
+ORA-02259: duplicate UNIQUE/PRIMARY KEY specifications 
+
+
+SQL> create table hobby(
+  2      hobby_code number(8) primary key,
+  3      emp_no number(8) references emp ,
+  4      hobby_title varchar2(12) not null,
+  5      hobby_class varchar2(12) not null);
+
+Table created.
+
+SQL> create a sequence hobbycode_seq
+  2  start with 121
+  3  increment by 71
+  4  no cycle
+  5  nocache
+  6  order;
+create a sequence hobbycode_seq
+       *
+ERROR at line 1:
+ORA-00901: invalid CREATE command 
+
+
+SQL> create a sequence hobbycode_seq
+  2  start with 121
+  3  increment by 71
+  4  order;
+create a sequence hobbycode_seq
+       *
+ERROR at line 1:
+ORA-00901: invalid CREATE command 
+
+
+SQL> create  sequence hobbycode_seq
+  2  start with 121
+  3  increment by 71
+  4  order;
+
+Sequence created.
+
+SQL> create or replace trigger hobby_trg
+  2  before insert on hobby
+  3  for each row
+  4  begin
+  5  :new.hobby_code:=hobbycode_seq.nextval;
+  6  end;
+  7  /
+
+Trigger created.
+
+SQL> create  sequence empno_seq
+  2    2  start with 111
+  3    3  increment by 113
+  4    4  order;
+  2  start with 111
+  *
+ERROR at line 2:
+ORA-00933: SQL command not properly ended 
+
+
+SQL> create sequence empno_seq
+  2  start with 111
+  3  increment by 113
+  4  order;
+
+Sequence created.
+
+SQL> create or replace trigger emp_trg
+  2  before insert on emp
+  3  for each row
+  4  begin
+  5  :new.empno_seq.nextval;
+  6  end/
+  7  /
+
+Warning: Trigger created with compilation errors.
+
+SQL> create or replace trigger emp_trg
+  2  before insert on emp
+  3  for each row
+  4  begin
+  5  :new.empnoempno_seq.nextval;
+  6  /
+
+Warning: Trigger created with compilation errors.
+
+SQL> create or replace trigger emp_trg
+  2  before insert on emp
+  3  for each row
+  4  begin
+  5  :new.empno:=empno_seq.nextval;
+  6  end;
+  7  /
+
+Trigger created.
+
+SQL> insert into emp values(111,'SINTEI','LIYOSI','APT','Sales','LKBeam','F','ONANDA','Patel','Shiko',50000,'12-9-89','Wife');
+insert into emp values(111,'SINTEI','LIYOSI','APT','Sales','LKBeam','F','ONANDA','Patel','Shiko',50000,'12-9-89','Wife')
+                                             *
+ERROR at line 1:
+ORA-01722: invalid number 
+
+
+SQL> insert into values(empno_seq, 'SINTEI', 'LIYOSI','sales','LKBeam','F','ONANDA','Patel','Shiko','50000','12-9-89','wife');
+insert into values(empno_seq, 'SINTEI', 'LIYOSI','sales','LKBeam','F','ONANDA','Patel','Shiko','50000','12-9-89','wife')
+            *
+ERROR at line 1:
+ORA-00903: invalid table name 
+
+
+SQL> insert into emp values(empno_seq, 'SINTEI', 'LIYOSI','sales','LKBeam','F','ONANDA','Patel','Shiko','50000','12-9-89','wife');
+insert into emp values(empno_seq, 'SINTEI', 'LIYOSI','sales','LKBeam','F','ONANDA','Patel','Shiko','50000','12-9-89','wife')
+            *
+ERROR at line 1:
+ORA-00947: not enough values 
+
+
+SQL> insert into emp values(empno_seq, 'SINTEI', 'LIYOSI', 'APT','sales','LKBeam','F','ONANDA','Patel','Shiko','50000','12-9-89','wife');
+insert into emp values(empno_seq, 'SINTEI', 'LIYOSI', 'APT','sales','LKBeam','F','ONANDA','Patel','Shiko','50000','12-9-89','wife')
+                       *
+ERROR at line 1:
+ORA-00984: column not allowed here 
+
+
+SQL> insert into emp values(111, 'SINTEI', 'LIYOSI', 'APT','sales','LKBeam','F','ONANDA','Patel','Shiko','50000','12-9-89','wife');
+insert into emp values(111, 'SINTEI', 'LIYOSI', 'APT','sales','LKBeam','F','ONANDA','Patel','Shiko','50000','12-9-89','wife')
+                                                *
+ERROR at line 1:
+ORA-01722: invalid number 
+
+
+SQL> COMMIT
+  2  /
+
+Commit complete.
+
+SQL> EXIT
